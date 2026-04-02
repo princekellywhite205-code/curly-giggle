@@ -17,23 +17,11 @@ background-color: #0a0a0a;
 color: #fff;
 }
 
-/* Luxury stars background */
-body::before {
-content: "";
-position: absolute; width: 100%; height: 100%;
-background: radial-gradient(circle, #ffffff33 1px, transparent 1px);
-background-size: 10px 10px;
-pointer-events: none;
-z-index: 0;
-}
-
 /* PAGE 1 - Gift Box */
 #boxContainer {
 display: flex; flex-direction: column;
 justify-content: center; align-items: center;
-z-index: 1;
 }
-
 #box {
 width: 150px; height: 150px;
 background: linear-gradient(145deg, #333, #111);
@@ -43,7 +31,6 @@ font-size: 50px;
 cursor: pointer;
 box-shadow: 0 0 20px #fff;
 }
-
 #clickMe {
 margin-top: 30px; padding: 15px 30px;
 background-color: #222;
@@ -54,12 +41,10 @@ font-size: 18px;
 cursor: pointer;
 transition: transform 0.2s, box-shadow 0.2s;
 }
-
 #clickMe:hover {
 transform: scale(1.1);
 box-shadow: 0 0 15px gold;
 }
-
 @keyframes shake {
 0% { transform: translateX(0); }
 20% { transform: translateX(-10px); }
@@ -72,65 +57,46 @@ box-shadow: 0 0 15px gold;
 /* PAGE 2 - Celebration */
 #celebration {
 display: none;
-position: absolute; width: 100%; height: 100%;
+position: absolute;
+width: 100%; height: 100%;
+background-color: #0a0a0a;
 text-align: center;
-z-index: 1;
 }
 
+/* Text */
 #birthdayText {
 position: absolute;
-top: 15%;
+top: 20%;
 width: 100%;
 font-size: 60px;
 color: #c0c0c0;
 text-shadow: 0 0 15px #fff, 0 0 30px #ffd700;
 }
 
-/* Container for images + roses */
+/* Image container */
 #imageContainer {
-display: flex; justify-content: center; gap: 20px;
-position: absolute; top: 50%; left: 50%;
+display: none;
+position: absolute;
+top: 50%;
+left: 50%;
 transform: translate(-50%, -50%);
+display: flex;
+gap: 20px;
 }
-
-.imageWrapper {
-position: relative;
-}
-
-.imageEnter {
+#imageContainer img {
+width: 200px;
+height: auto;
+border-radius: 15px;
+box-shadow: 0 0 15px #fff;
 opacity: 0;
 transform: translateY(-100px) rotate(-15deg);
-animation: enterAnim 0.8s forwards; /* ensures it stays after animation */
+animation: enterAnim 0.8s forwards;
 }
-
 @keyframes enterAnim {
 0% { opacity: 0; transform: translateY(-100px) rotate(-15deg); }
 50% { opacity: 1; transform: translateY(20px) rotate(10deg); }
 70% { transform: translateY(-10px) rotate(-5deg); }
-100% { transform: translateY(0) rotate(0deg); }
-}
-
-#imageContainer img {
-width: 200px; height: auto;
-border-radius: 15px;
-box-shadow: 0 0 15px #fff;
-}
-
-/* Rose effect */
-.rose {
-position: absolute;
-top: -50px; left: 50%;
-width: 30px; height: 30px;
-background: radial-gradient(circle at 50% 50%, #ff4d4d 0%, #b30000 70%);
-border-radius: 50%;
-transform: translateX(-50%) scale(0);
-animation: bloom 1s forwards;
-}
-
-@keyframes bloom {
-0% { transform: translateX(-50%) scale(0); opacity: 0; }
-50% { transform: translateX(-50%) scale(1.2); opacity: 1; }
-100% { transform: translateX(-50%) scale(1); opacity: 1; }
+100% { opacity: 1; transform: translateY(0) rotate(0deg); }
 }
 
 /* Confetti */
@@ -154,20 +120,10 @@ border-radius: 50%;
 <!-- PAGE 2 -->
 <div id="celebration">
 <div id="birthdayText">Happy 18th Birthday Mia!</div>
-
-<!-- Two images in center with roses -->
 <div id="imageContainer">
-<div class="imageWrapper">
-<div class="rose"></div>
-<img src="Mia.jpeg" alt="Mia 1" class="imageEnter">
+<img src="Mia.jpeg" alt="Mia 1">
+<img src="mia2.png" alt="Mia 2">
 </div>
-<div class="imageWrapper">
-<div class="rose"></div>
-<img src="mia2.png" alt="Mia 2" class="imageEnter">
-</div>
-</div>
-
-<!-- Audio -->
 <audio id="birthdayAudio" src="bb.mp3" autoplay></audio>
 </div>
 
@@ -177,7 +133,6 @@ const box = document.getElementById('box');
 const boxContainer = document.getElementById('boxContainer');
 const celebration = document.getElementById('celebration');
 const imageContainer = document.getElementById('imageContainer');
-const roses = document.querySelectorAll('.rose');
 const audio = document.getElementById('birthdayAudio');
 
 clickMeBtn.addEventListener('click', () => {
@@ -185,9 +140,9 @@ box.style.animation = 'shake 0.5s';
 box.addEventListener('animationend', () => {
 boxContainer.style.display = 'none';
 celebration.style.display = 'block';
-audio.play().catch(() => {}); // plays audio
 startConfetti();
-imageContainer.style.display = 'flex'; // show images immediately
+imageContainer.style.display = 'flex';
+audio.play();
 }, { once: true });
 });
 
@@ -197,7 +152,7 @@ const colors = ['#c0c0c0', '#ffd700', '#fff'];
 for (let i = 0; i < 200; i++) {
 const confetti = document.createElement('div');
 confetti.classList.add('confetti');
-confetti.style.backgroundColor = colors[Math.floor(Math.random()*colors.length)];
+confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
 confetti.style.left = Math.random() * window.innerWidth + 'px';
 confetti.style.top = Math.random() * -window.innerHeight + 'px';
 confetti.style.width = Math.random() * 10 + 5 + 'px';
@@ -206,11 +161,6 @@ confetti.style.opacity = Math.random() * 0.8 + 0.2;
 document.body.appendChild(confetti);
 animateConfetti(confetti);
 }
-
-// Roses bloom
-roses.forEach((rose,i) => {
-setTimeout(() => { rose.style.animationPlayState = 'running'; }, i*300);
-});
 }
 
 function animateConfetti(confetti) {
