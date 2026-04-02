@@ -8,7 +8,8 @@
 @import url('https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap');
 
 body, html {
-margin: 0; padding: 0; width: 100%; height: 100%;
+margin: 0; padding: 0;
+width: 100%; height: 100%;
 font-family: 'Great Vibes', cursive;
 overflow: hidden;
 display: flex; justify-content: center; align-items: center;
@@ -16,10 +17,21 @@ background-color: #0a0a0a;
 color: #fff;
 }
 
+/* Luxury stars background */
+body::before {
+content: "";
+position: absolute; width: 100%; height: 100%;
+background: radial-gradient(circle, #ffffff33 1px, transparent 1px);
+background-size: 10px 10px;
+pointer-events: none;
+z-index: 0;
+}
+
 /* PAGE 1 - Gift Box */
 #boxContainer {
 display: flex; flex-direction: column;
 justify-content: center; align-items: center;
+z-index: 1;
 }
 
 #box {
@@ -60,31 +72,14 @@ box-shadow: 0 0 15px gold;
 /* PAGE 2 - Celebration */
 #celebration {
 display: none;
-position: absolute;
-width: 100%; height: 100%;
-background-color: #0a0a0a;
+position: absolute; width: 100%; height: 100%;
 text-align: center;
-}
-
-/* Stars background */
-.star {
-position: absolute;
-width: 2px; height: 2px;
-background: silver;
-border-radius: 50%;
-opacity: 0.8;
-animation: twinkle 2s infinite alternate;
-}
-
-@keyframes twinkle {
-0% { opacity: 0.3; }
-50% { opacity: 1; }
-100% { opacity: 0.3; }
+z-index: 1;
 }
 
 #birthdayText {
 position: absolute;
-top: 20%;
+top: 15%;
 width: 100%;
 font-size: 60px;
 color: #c0c0c0;
@@ -93,24 +88,19 @@ text-shadow: 0 0 15px #fff, 0 0 30px #ffd700;
 
 /* Container for images + roses */
 #imageContainer {
-display: none;
-position: absolute;
-top: 50%;
-left: 50%;
+display: flex; justify-content: center; gap: 20px;
+position: absolute; top: 50%; left: 50%;
 transform: translate(-50%, -50%);
-display: flex;
-gap: 20px;
 }
 
 .imageWrapper {
 position: relative;
 }
 
-/* Image entrance animation */
 .imageEnter {
 opacity: 0;
 transform: translateY(-100px) rotate(-15deg);
-animation: enterAnim 0.8s forwards;
+animation: enterAnim 0.8s forwards; /* ensures it stays after animation */
 }
 
 @keyframes enterAnim {
@@ -121,8 +111,7 @@ animation: enterAnim 0.8s forwards;
 }
 
 #imageContainer img {
-width: 200px;
-height: auto;
+width: 200px; height: auto;
 border-radius: 15px;
 box-shadow: 0 0 15px #fff;
 }
@@ -130,10 +119,8 @@ box-shadow: 0 0 15px #fff;
 /* Rose effect */
 .rose {
 position: absolute;
-top: -50px;
-left: 50%;
-width: 30px;
-height: 30px;
+top: -50px; left: 50%;
+width: 30px; height: 30px;
 background: radial-gradient(circle at 50% 50%, #ff4d4d 0%, #b30000 70%);
 border-radius: 50%;
 transform: translateX(-50%) scale(0);
@@ -154,23 +141,6 @@ opacity: 0.9;
 pointer-events: none;
 border-radius: 50%;
 }
-
-/* Responsive for mobile */
-@media (max-width: 600px) {
-#birthdayText {
-font-size: 40px;
-top: 15%;
-padding: 0 10px;
-}
-#imageContainer {
-flex-direction: column;
-top: 35%;
-gap: 15px;
-}
-#imageContainer img {
-width: 150px;
-}
-}
 </style>
 </head>
 <body>
@@ -185,7 +155,7 @@ width: 150px;
 <div id="celebration">
 <div id="birthdayText">Happy 18th Birthday Mia!</div>
 
-<!-- Two images in center with rose -->
+<!-- Two images in center with roses -->
 <div id="imageContainer">
 <div class="imageWrapper">
 <div class="rose"></div>
@@ -210,68 +180,58 @@ const imageContainer = document.getElementById('imageContainer');
 const roses = document.querySelectorAll('.rose');
 const audio = document.getElementById('birthdayAudio');
 
-// Stars background
-for (let i=0;i<100;i++){
-let star = document.createElement('div');
-star.className = 'star';
-star.style.left = Math.random()*window.innerWidth+'px';
-star.style.top = Math.random()*window.innerHeight+'px';
-star.style.width = Math.random()*3+1+'px';
-star.style.height = star.style.width;
-star.style.animationDuration = (Math.random()*3+1)+'s';
-document.body.appendChild(star);
-}
-
 clickMeBtn.addEventListener('click', () => {
 box.style.animation = 'shake 0.5s';
 box.addEventListener('animationend', () => {
 boxContainer.style.display = 'none';
 celebration.style.display = 'block';
-audio.play();
+audio.play().catch(() => {}); // plays audio
 startConfetti();
-setTimeout(() => {
-imageContainer.style.display = 'flex';
-roses.forEach((rose, i)=>{
-setTimeout(()=>{rose.style.animationPlayState='running'}, i*300);
-});
-}, 800);
+imageContainer.style.display = 'flex'; // show images immediately
 }, { once: true });
 });
 
 // Confetti
 function startConfetti() {
-const colors = ['#c0c0c0','#fff'];
-for(let i=0;i<200;i++){
+const colors = ['#c0c0c0', '#ffd700', '#fff'];
+for (let i = 0; i < 200; i++) {
 const confetti = document.createElement('div');
-confetti.className='confetti';
-confetti.style.backgroundColor=colors[Math.floor(Math.random()*colors.length)];
-confetti.style.left=Math.random()*window.innerWidth+'px';
-confetti.style.top=Math.random()*-window.innerHeight+'px';
-confetti.style.width=Math.random()*10+5+'px';
-confetti.style.height=confetti.style.width;
-confetti.style.opacity=Math.random()*0.8+0.2;
+confetti.classList.add('confetti');
+confetti.style.backgroundColor = colors[Math.floor(Math.random()*colors.length)];
+confetti.style.left = Math.random() * window.innerWidth + 'px';
+confetti.style.top = Math.random() * -window.innerHeight + 'px';
+confetti.style.width = Math.random() * 10 + 5 + 'px';
+confetti.style.height = confetti.style.width;
+confetti.style.opacity = Math.random() * 0.8 + 0.2;
 document.body.appendChild(confetti);
 animateConfetti(confetti);
 }
+
+// Roses bloom
+roses.forEach((rose,i) => {
+setTimeout(() => { rose.style.animationPlayState = 'running'; }, i*300);
+});
 }
 
-function animateConfetti(confetti){
-let top=parseFloat(confetti.style.top);
-let left=parseFloat(confetti.style.left);
-const speed=Math.random()*3+2;
-const swing=Math.random()*2-1;
-const rotationSpeed=Math.random()*10;
-function fall(){
-top+=speed;
-left+=swing;
-confetti.style.top=top+'px';
-confetti.style.left=left+'px';
-confetti.style.transform=`rotate(${rotationSpeed+top}deg)`;
-if(top<window.innerHeight) requestAnimationFrame(fall);
+function animateConfetti(confetti) {
+let top = parseFloat(confetti.style.top);
+let left = parseFloat(confetti.style.left);
+const speed = Math.random() * 3 + 2;
+const swing = Math.random() * 2 - 1;
+const rotationSpeed = Math.random() * 10;
+
+function fall() {
+top += speed;
+left += swing;
+confetti.style.top = top + 'px';
+confetti.style.left = left + 'px';
+confetti.style.transform = `rotate(${rotationSpeed + top}deg)`;
+if (top < window.innerHeight) requestAnimationFrame(fall);
 else confetti.remove();
 }
 fall();
 }
 </script>
+
 </body>
 </html>
